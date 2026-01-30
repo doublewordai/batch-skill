@@ -45,20 +45,24 @@ Your existing async code works unchanged. Requests are collected and submitted a
 
 Full documentation at https://docs.doubleword.ai/batches
 
+For raw markdown content (recommended for AI agents), append `.md` to any URL:
+- Index: `https://docs.doubleword.ai/batches.md`
+- Any page: `https://docs.doubleword.ai/batches/<slug>.md`
+
 **Getting Started**
-- How to submit a batch: `/batches/getting-started-with-batched-api`
-- Creating an API Key: `/batches/creating-an-api-key`
-- Model Pricing: `/batches/model-pricing`
-- Tool Calling and Structured Outputs: `/batches/tool-calling`
+- How to submit a batch: `https://docs.doubleword.ai/batches/getting-started-with-batched-api.md`
+- Creating an API Key: `https://docs.doubleword.ai/batches/creating-an-api-key.md`
+- Model Pricing: `https://docs.doubleword.ai/batches/model-pricing.md`
+- Tool Calling and Structured Outputs: `https://docs.doubleword.ai/batches/tool-calling.md`
 
 **Examples**
-- autobatcher (Python client): `/batches/autobatcher`
-- Research Paper Digest: `/batches/research-summaries`
-- Semantic Search Without Embeddings: `/batches/semantic-search-without-embeddings`
+- autobatcher (Python client): `https://docs.doubleword.ai/batches/autobatcher.md`
+- Research Paper Digest: `https://docs.doubleword.ai/batches/research-summaries.md`
+- Semantic Search Without Embeddings: `https://docs.doubleword.ai/batches/semantic-search-without-embeddings.md`
 
 **Conceptual Guides**
-- Why Batch Inference Matters: `/batches/why-batch-inference-matters`
-- What is a JSONL file?: `/batches/jsonl-files`
+- Why Batch Inference Matters: `https://docs.doubleword.ai/batches/why-batch-inference-matters.md`
+- What is a JSONL file?: `https://docs.doubleword.ai/batches/jsonl-files.md`
 
 ## Quick Reference
 
