@@ -34,13 +34,6 @@ This skill works with popular AI coding agents including:
 - Codex
 - Other agents that support the skills format
 
-## What's Included
-
-| File | Description |
-|------|-------------|
-| `SKILL.md` | Main skill file with API documentation and usage instructions |
-| `examples.py` | Python examples for submitting and monitoring batch jobs |
-
 ## Using the Skill
 
 Once installed, you can ask your AI agent questions like:
