@@ -1,171 +1,222 @@
 ---
 name: doubleword-batch
-description: Submit and manage batch inference jobs via Doubleword API
+description: Submit and manage batch inference jobs via the Doubleword Batch API
 ---
 
 # Doubleword Batch API
 
-This skill teaches you how to use the Doubleword Batch API for high-throughput inference workloads with up to 50% cost savings.
+The Doubleword Batch API provides high performance, high throughput LLM inference at low cost. The API is fully compatible with OpenAI's Batch API.
 
-## Overview
+## Documentation Structure
 
-The Batch API is designed for processing large volumes of requests asynchronously. Instead of waiting for each request to complete, you submit a batch job and retrieve results when processing finishes.
+Full documentation at https://docs.doubleword.ai/batches
 
-**Key benefits:**
-- Up to 50% cost savings compared to real-time inference
-- Higher throughput limits
-- Automatic retries and error handling
-- Results available for 7 days after completion
+**Getting Started**
+- How to submit a batch: `/batches/getting-started-with-batched-api`
+- Creating an API Key: `/batches/creating-an-api-key`
+- Model Pricing: `/batches/model-pricing`
+- Tool Calling and Structured Outputs: `/batches/tool-calling`
 
-## API Endpoints
+**Examples**
+- autobatcher (Python client): `/batches/autobatcher`
+- Research Paper Digest: `/batches/research-summaries`
+- Semantic Search Without Embeddings: `/batches/semantic-search-without-embeddings`
 
-Base URL: `https://api.doubleword.ai`
+**Conceptual Guides**
+- Why Batch Inference Matters: `/batches/why-batch-inference-matters`
+- What is a JSONL file?: `/batches/jsonl-files`
 
-### Submit a Batch Job
+## Quick Reference
 
-```bash
-POST /v1/batches
-Authorization: Bearer YOUR_API_KEY
-Content-Type: application/json
-
-{
-  "requests": [
-    {
-      "custom_id": "request-1",
-      "method": "POST",
-      "url": "/v1/messages",
-      "body": {
-        "model": "claude-sonnet-4-20250514",
-        "max_tokens": 1024,
-        "messages": [
-          {"role": "user", "content": "Summarize this text: ..."}
-        ]
-      }
-    }
-  ],
-  "completion_window": "24h"
-}
+### Base URL
+```
+https://api.doubleword.ai/v1
 ```
 
-Response:
+### Available Models
+
+| Model | 24hr Input | 24hr Output |
+|-------|------------|-------------|
+| Qwen/Qwen3-VL-30B-A3B-Instruct-FP8 | $0.05/1M | $0.20/1M |
+| Qwen/Qwen3-VL-235B-A22B-Instruct-FP8 | $0.10/1M | $0.40/1M |
+
+SLA options: `24h` (cheapest), `1h` (faster)
+
+### Batch File Format (.jsonl)
+
+Each line contains a single request:
+
 ```json
-{
-  "id": "batch_abc123",
-  "status": "validating",
-  "request_counts": {
-    "total": 1,
-    "completed": 0,
-    "failed": 0
-  },
-  "created_at": "2025-01-15T10:00:00Z"
-}
+{"custom_id": "req-1", "method": "POST", "url": "/v1/chat/completions", "body": {"model": "Qwen/Qwen3-VL-30B-A3B-Instruct-FP8", "messages": [{"role": "user", "content": "Hello"}]}}
 ```
 
-### Check Batch Status
+Required fields:
+- `custom_id`: Your unique identifier (max 64 chars)
+- `method`: Always `"POST"`
+- `url`: Always `"/v1/chat/completions"`
+- `body`: Standard chat completion request
 
-```bash
-GET /v1/batches/{batch_id}
-Authorization: Bearer YOUR_API_KEY
-```
+### Limits
+- Max file size: 200MB
+- Max requests per file: 50,000
 
-Status values: `validating`, `in_progress`, `completed`, `failed`, `expired`, `canceling`, `canceled`
+## API Operations
 
-### Retrieve Results
-
-Once status is `completed`:
-
-```bash
-GET /v1/batches/{batch_id}/results
-Authorization: Bearer YOUR_API_KEY
-```
-
-Returns JSONL with one result per line:
-```json
-{"custom_id": "request-1", "response": {"status_code": 200, "body": {...}}}
-```
-
-### Cancel a Batch
-
-```bash
-POST /v1/batches/{batch_id}/cancel
-Authorization: Bearer YOUR_API_KEY
-```
-
-### List Batches
-
-```bash
-GET /v1/batches
-Authorization: Bearer YOUR_API_KEY
-```
-
-Query parameters: `limit`, `after`, `before`
-
-## Completion Windows and Pricing
-
-| Window | Discount | Use Case |
-|--------|----------|----------|
-| 24h | 50% off | Large batch jobs, overnight processing |
-| 1h | 25% off | Faster turnaround, still cost-effective |
-
-## Best Practices
-
-1. **Use custom_ids**: Always include meaningful `custom_id` values to correlate results with your original requests.
-
-2. **Batch size**: Submit batches of 1,000-10,000 requests for optimal throughput. The API accepts up to 50,000 requests per batch.
-
-3. **Poll efficiently**: Check status every 30-60 seconds rather than constantly polling.
-
-4. **Handle partial failures**: Some requests in a batch may fail while others succeed. Always check `request_counts` and process both successful and failed results.
-
-5. **Idempotency**: Use the same batch ID for retries to avoid duplicate processing.
-
-## Python Client (Autobatcher)
-
-The `doubleword` Python package includes an autobatcher for easy batch processing:
+### 1. Upload Batch File
 
 ```python
-from doubleword import Doubleword
+from openai import OpenAI
 
-client = Doubleword(api_key="YOUR_API_KEY")
-
-# Submit requests - automatically batched
-results = client.batches.create_and_wait(
-    requests=[
-        {
-            "custom_id": f"req-{i}",
-            "params": {
-                "model": "claude-sonnet-4-20250514",
-                "max_tokens": 1024,
-                "messages": [{"role": "user", "content": text}]
-            }
-        }
-        for i, text in enumerate(texts)
-    ],
-    completion_window="24h"
+client = OpenAI(
+    api_key="YOUR_API_KEY",
+    base_url="https://api.doubleword.ai/v1"
 )
 
-for result in results:
-    print(result.custom_id, result.response.content)
+batch_file = client.files.create(
+    file=open("batch.jsonl", "rb"),
+    purpose="batch"
+)
+# Returns: {"id": "file-xxx", ...}
 ```
 
-## Error Handling
+### 2. Create Batch
 
-Common errors:
+```python
+batch = client.batches.create(
+    input_file_id=batch_file.id,
+    endpoint="/v1/chat/completions",
+    completion_window="24h",  # or "1h"
+    metadata={"description": "my batch job"}
+)
+# Returns batch with output_file_id and error_file_id
+```
 
-- `400 Bad Request`: Invalid request format or parameters
-- `401 Unauthorized`: Invalid or missing API key
-- `429 Too Many Requests`: Rate limit exceeded, retry with backoff
-- `500 Internal Server Error`: Retry the request
+### 3. Check Status
 
-For batch-level errors, check the `errors` field in the batch status response.
+```python
+status = client.batches.retrieve(batch.id)
+print(status.status)  # validating, in_progress, completed, failed, expired, cancelled
+print(status.request_counts)  # {"total": 100, "completed": 50, "failed": 0}
+```
 
-## Monitoring
+### 4. Download Results
 
-Track batch progress via:
-1. Status polling (recommended)
-2. Webhook notifications (configure in dashboard)
-3. Batch API list endpoint for overview
+Results available immediately as they complete (unlike OpenAI):
 
-## Documentation
+```python
+import requests
 
-Full documentation: https://docs.doubleword.ai/batches
+response = requests.get(
+    f"https://api.doubleword.ai/v1/files/{batch.output_file_id}/content",
+    headers={"Authorization": f"Bearer YOUR_API_KEY"}
+)
+
+# Check if batch still running
+is_incomplete = response.headers.get("X-Incomplete") == "true"
+last_line = response.headers.get("X-Last-Line")
+
+with open("results.jsonl", "wb") as f:
+    f.write(response.content)
+
+# Resume partial download with ?offset=<last_line>
+```
+
+### 5. Cancel Batch
+
+```python
+client.batches.cancel(batch.id)
+```
+
+### 6. List Batches
+
+```python
+batches = client.batches.list(limit=10)
+```
+
+## autobatcher (Python Client)
+
+Drop-in replacement for `AsyncOpenAI` that transparently batches requests for 50%+ cost savings.
+
+GitHub: https://github.com/doublewordai/autobatcher
+
+```bash
+pip install autobatcher
+```
+
+```python
+import asyncio
+from autobatcher import BatchOpenAI
+
+async def main():
+    # Same interface as AsyncOpenAI, but requests are batched automatically
+    client = BatchOpenAI(
+        api_key="YOUR_API_KEY",
+        base_url="https://api.doubleword.ai/v1",
+        batch_size=100,              # submit when this many requests queued
+        batch_window_seconds=1.0,    # or after this many seconds
+        completion_window="24h",     # "24h" (cheapest) or "1h" (faster)
+    )
+
+    response = await client.chat.completions.create(
+        model="Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+        messages=[{"role": "user", "content": "Hello!"}],
+    )
+    print(response.choices[0].message.content)
+    await client.close()
+
+asyncio.run(main())
+```
+
+### Parallel Requests
+
+```python
+async def process_many(prompts: list[str]) -> list[str]:
+    async with BatchOpenAI(base_url="https://api.doubleword.ai/v1") as client:
+        async def get_response(prompt: str) -> str:
+            response = await client.chat.completions.create(
+                model="Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+                messages=[{"role": "user", "content": prompt}],
+            )
+            return response.choices[0].message.content
+
+        # All requests batched together automatically
+        return await asyncio.gather(*[get_response(p) for p in prompts])
+```
+
+## Tool Calling & Structured Outputs
+
+Fully compatible with OpenAI's function calling and structured outputs:
+
+```python
+response = client.chat.completions.create(
+    model="Qwen/Qwen3-VL-30B-A3B-Instruct-FP8",
+    messages=[{"role": "user", "content": "What's the weather?"}],
+    tools=[{
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "parameters": {"type": "object", "properties": {...}}
+        }
+    }]
+)
+```
+
+For structured outputs, use `response_format` with JSON Schema.
+
+## Key Differences from OpenAI
+
+1. **Partial results**: Download results as they complete, don't wait for entire batch
+2. **Resumable downloads**: Use `X-Last-Line` header with `?offset=` to resume
+3. **Output file created immediately**: `output_file_id` available right after batch creation
+
+## Console
+
+Web interface at https://app.doubleword.ai/batches for:
+- Uploading files
+- Creating and monitoring batches
+- Viewing real-time progress
+- Downloading results
+
+## Support
+
+Contact: support@doubleword.ai
