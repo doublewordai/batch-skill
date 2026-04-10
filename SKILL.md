@@ -20,12 +20,12 @@ The Doubleword platform provides high-performance LLM inference with an OpenAI-c
 
 Full docs at https://docs.doubleword.ai/inference-api and https://docs.doubleword.ai/dw-cli
 
-For raw markdown (recommended for AI agents), append `.md` to Inference API URLs.
+For raw markdown (recommended for AI agents), append `.md` to any URL.
 
 **Inference API**
 - Overview: `https://docs.doubleword.ai/inference-api.md`
 - Getting started: `https://docs.doubleword.ai/inference-api/intro-to-doubleword-inference.md`
-- Model pricing: `https://docs.doubleword.ai/inference-api/model-pricing.md`
+- Models & pricing: `https://docs.doubleword.ai/inference-api/models.md`
 - Realtime inference: `https://docs.doubleword.ai/inference-api/realtime-inference.md`
 - Async inference (autobatcher): `https://docs.doubleword.ai/inference-api/async-inference.md`
 - Batch inference: `https://docs.doubleword.ai/inference-api/batch-inference.md`
@@ -37,22 +37,23 @@ For raw markdown (recommended for AI agents), append `.md` to Inference API URLs
 - API reference (OpenAPI): `https://docs.doubleword.ai/inference-api/api-reference.md`
 
 **CLI**
-- Introduction: `https://docs.doubleword.ai/dw-cli/introduction`
-- Installation: `https://docs.doubleword.ai/dw-cli/installation`
-- Authentication: `https://docs.doubleword.ai/dw-cli/authentication`
-- Quickstart: `https://docs.doubleword.ai/dw-cli/quickstart`
-- Batch processing: `https://docs.doubleword.ai/dw-cli/batches`
-- Streaming results: `https://docs.doubleword.ai/dw-cli/streaming`
-- Realtime inference: `https://docs.doubleword.ai/dw-cli/realtime`
-- JSONL format: `https://docs.doubleword.ai/dw-cli/jsonl-format`
-- Local file tools: `https://docs.doubleword.ai/dw-cli/file-tools`
-- Project system: `https://docs.doubleword.ai/dw-cli/projects`
-- Examples: `https://docs.doubleword.ai/dw-cli/examples`
-- Command reference: `https://docs.doubleword.ai/dw-cli/commands`
-- Accounts: `https://docs.doubleword.ai/dw-cli/accounts`
-- Keys & webhooks: `https://docs.doubleword.ai/dw-cli/keys-webhooks`
-- Usage: `https://docs.doubleword.ai/dw-cli/usage`
-- Global flags: `https://docs.doubleword.ai/dw-cli/global-flags`
+- Overview: `https://docs.doubleword.ai/dw-cli.md`
+- Introduction: `https://docs.doubleword.ai/dw-cli/introduction.md`
+- Installation: `https://docs.doubleword.ai/dw-cli/installation.md`
+- Authentication: `https://docs.doubleword.ai/dw-cli/authentication.md`
+- Quickstart: `https://docs.doubleword.ai/dw-cli/quickstart.md`
+- Batch processing: `https://docs.doubleword.ai/dw-cli/batches.md`
+- Streaming results: `https://docs.doubleword.ai/dw-cli/streaming.md`
+- Realtime inference: `https://docs.doubleword.ai/dw-cli/realtime.md`
+- JSONL format: `https://docs.doubleword.ai/dw-cli/jsonl-format.md`
+- Local file tools: `https://docs.doubleword.ai/dw-cli/file-tools.md`
+- Project system: `https://docs.doubleword.ai/dw-cli/projects.md`
+- Examples: `https://docs.doubleword.ai/dw-cli/examples.md`
+- Command reference: `https://docs.doubleword.ai/dw-cli/commands.md`
+- Accounts: `https://docs.doubleword.ai/dw-cli/accounts.md`
+- Keys & webhooks: `https://docs.doubleword.ai/dw-cli/keys-webhooks.md`
+- Usage: `https://docs.doubleword.ai/dw-cli/usage.md`
+- Global flags: `https://docs.doubleword.ai/dw-cli/global-flags.md`
 
 **Workbooks (examples)**
 - CLI examples: `https://docs.doubleword.ai/inference-api/cli-examples`
